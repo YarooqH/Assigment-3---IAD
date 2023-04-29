@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Todo List</title>
+     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      .bg-gray-100 {
+        background-color: #f7fafc;
+      }
+      .bg-red-100 {
+        background-color: #fed7d7;
+      }
+      .bg-green-100 {
+        background-color: #c6f6d5;
+      }
+      .bg-yellow-100 {
+        background-color: #fefcbf;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100">
+    <div class="max-w-md mx-auto my-10 bg-white p-5 rounded-md shadow-sm">
+      <h1 class="text-2xl font-bold mb-5 text-center text-indigo-500">Todo List</h1>
+      <form id="todo-form" class="mb-5">
+        <input
+          id="todo-input"
+          class="w-full border-gray-300 bg-indigo-100 rounded-md py-2 px-3 focus:outline-none focus:border-indigo-500 mb-3"
+          type="text"
+          placeholder="Enter a new todo item"
+          autocomplete="none"
+        />
+        <button
+          id="add-todo-button"
+          class="bg-indigo-500 text-white py-2 px-4 rounded-md hover:bg-indigo-600 focus:outline-none focus:bg-indigo-600"
+          type="submit"
+        >
+          Add Todo
+        </button>
+      </form>
+      <div id="todo-container">
+        <ul id="todo-list"></ul>
+      </div>
+    </div>
+
+    <script>
+      const todoForm = document.getElementById("todo-form");
+      const todoInput = document.getElementById("todo-input");
+      const todoList = document.getElementById("todo-list");
+      const todoContainer = document.getElementById("todo-container")
+
+      let todos = [];
+
+      function renderTodos() {
+        todoList.innerHTML = "";
+
+        for (let i = 0; i < todos.length; i++) {
+          const todo = todos[i];
+
+          const li = document.createElement("li");
+          li.classList.add(
+            "flex",
+            "justify-between",
+            "items-center",
+            "border",
+            "border-gray-300",
+            "rounded-md",
+            "py-2",
+            "px-3",
+            "mb-3",
+            "bg-white"
+          );
+          li.setAttribute("data-id", todo.id);
+
+          const span = document.createElement("span");
+          span.classList.add("flex-grow", "ml-2");
+          span.innerText = todo.title;
+
+          const editButton = document.createElement("button");
+          editButton.classList.add(
+            "bg-yellow-100",
+            "text-yellow-700",
+            "py-1",
+            "px-2",
+            "rounded-md",
+            "hover:bg-yellow-200",
+            "focus:outline-none",
+            "focus:bg-yellow-200"
+          );
+          editButton.innerText = "Edit";
+          editButton.addEventListener("click", (event) => {
+            const id = event.target.parentNode.getAttribute("data-id");
+            const todo = todos.find((todo) => todo.id === id);
+
+            const newTitle = prompt("Enter the new title for this todo item:", todo.title);
+
+            if (newTitle !== null) {
+              todo.title = newTitle;
+              renderTodos();
+            }
+          });
+
+          const deleteButton = document.createElement("button");
+          deleteButton.classList.add(
+            "ml-4",
+            "bg-red-100",
+            "text-red-700",
+            "py-1",
+            "px-2",
+            "rounded-md",
+            "hover:bg-red-200",
+            "focus:outline-none",
+            "focus:bg-red-200"
+            );
+            deleteButton.innerText = "Delete";
+            deleteButton.addEventListener("click", (event) => {
+            const id = event.target.parentNode.getAttribute("data-id");
+            todos = todos.filter((todo) => todo.id !== id);
+            renderTodos();
+            });
+            li.appendChild(span);
+    li.appendChild(editButton);
+    li.appendChild(deleteButton);
+    todoList.appendChild(li);
+  }
+  if(todos?.length === 1){
+    const deleteButton = document.createElement("button");
+          deleteButton.classList.add(
+            "w-full",
+            "p-2",
+            "bg-red-500",
+            "text-white",
+            "rounded-md",
+            "hover:bg-red-600",
+            "focus:outline-none",
+            "focus:bg-red-200"
+            );
+            deleteButton.innerText = "Clear List";
+            deleteButton.addEventListener("click", (event) => {
+              window.location.reload();            
+            });
+            todoContainer.appendChild(deleteButton)
+  }
+}
+
+todoForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+
+  const title = todoInput.value.trim();
+
+  if (title !== "") {
+    const todo = {
+      id: Date.now().toString(),
+      title: title,
+    };
+
+    todos.push(todo);
+    todoInput.value = "";
+    renderTodos();
+  }
+});
+  </script>
+</body>
+</html>
